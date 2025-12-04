@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopping Cart</title>
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            margin: 20px;
+            background: #f4f4f9;
+        }
+
+        h2 {
+            margin-top: 30px;
+            color: #333;
+        }
+
+        input {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #bbb;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .item, .cart-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #totalBox {
+            background: #fff;
+            padding: 15px;
+            margin-top: 15px;
+            width: fit-content;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .qty-btn {
+            padding: 6px 10px;
+            background: #2196F3;
+        }
+
+        .qty-btn:hover {
+            background: #0b7dda;
+        }
+
+        .remove-btn {
+            background: #e53935;
+        }
+
+        .remove-btn:hover {
+            background: #c62828;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Add Item</h2>
+<input id="itemName" type="text" placeholder="Item name">
+<input id="itemPrice" type="number" placeholder="Price">
+<button onclick="addItem()">Add</button>
+
+<h2>Available Items</h2>
+<div id="items"></div>
+
+<h2>Your Cart</h2>
+<div id="cart"></div>
+
+<div id="totalBox">
+    Total: ₹<span id="total">0.00</span>
+</div>
+
+<script>
+    alert("Happy Shopping!!");
+// Pre-loaded store items
+let items = [
+    { name: "Shoes", price: 1500 },
+    { name: "Watch", price: 2500 },
+    { name: "Handbag", price: 1899 },
+    { name: "Necklace", price: 1200 },
+    { name: "Sunglasses", price: 900 },
+    { name: "Bracelet", price: 1599 },
+    { name: "Wallet", price: 1200 },
+    { name: "Perfume", price: 1999 }
+];
+
+let cart = [];
+
+// Add item to available list manually
+function addItem() {
+    const name = document.getElementById('itemName').value;
+    const price = Number(document.getElementById('itemPrice').value);
+
+    if (!name || !price) {
+        alert("Please enter valid details");
+        return;
+    }
+
+    items.push({ name, price });
+    renderItems();
+
+    document.getElementById('itemName').value = "";
+    document.getElementById('itemPrice').value = "";
+}
+
+// Show available items
+function renderItems() {
+    const itemsDiv = document.getElementById("items");
+    itemsDiv.innerHTML = "";
+
+    items.forEach((item, index) => {
+        itemsDiv.innerHTML += `
+            <div class="item">
+                <span>${item.name} - ₹${item.price}</span>
+                <button onclick="addToCart(${index})">Add to Cart</button>
+            </div>
+        `;
+    });
+}
+
+// Add item to cart
+function addToCart(index) {
+    const selected = items[index];
+    const existing = cart.find(c => c.name === selected.name);
+
+    if (existing) {
+        existing.qty++;
+    } else {
+        cart.push({ ...selected, qty: 1 });
+    }
+    renderCart();
+}
+
+// Increase qty
+function increase(index) {
+    cart[index].qty++;
+    renderCart();
+}
+
+// Decrease qty
+function decrease(index) {
+    if (cart[index].qty > 1) {
+        cart[index].qty--;
+    } else {
+        cart.splice(index, 1);
+    }
+    renderCart();
+}
+
+// Remove item
+function removeItem(index) {
+    cart.splice(index, 1);
+    renderCart();
+}
+
+// Show cart
+function renderCart() {
+    const cartDiv = document.getElementById("cart");
+    cartDiv.innerHTML = "";
+
+    cart.forEach((item, index) => {
+        cartDiv.innerHTML += `
+            <div class="cart-item">
+                <span>${item.name} - ₹${item.price} × ${item.qty}</span>
+
+                <div>
+                    <button class="qty-btn" onclick="increase(${index})">+</button>
+                    <button class="qty-btn" onclick="decrease(${index})">-</button>
+                    <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+                </div>
+            </div>
+        `;
+    });
+
+    updateTotal();
+}
+
+// Calculate total
+function updateTotal() {
+    let total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    document.getElementById("total").innerText = total.toFixed(2);
+}
+
+// Initial render
+renderItems();
+</script>
+
+</body>
+</html>
