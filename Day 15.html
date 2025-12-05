@@ -77,12 +77,8 @@
         }
     </style>
 </head>
-<body>
 
-<h2>Add Item</h2>
-<input id="itemName" type="text" placeholder="Item name">
-<input id="itemPrice" type="number" placeholder="Price">
-<button onclick="addItem()">Add</button>
+<body>
 
 <h2>Available Items</h2>
 <div id="items"></div>
@@ -109,23 +105,6 @@ let items = [
 ];
 
 let cart = [];
-
-// Add item to available list manually
-function addItem() {
-    const name = document.getElementById('itemName').value;
-    const price = Number(document.getElementById('itemPrice').value);
-
-    if (!name || !price) {
-        alert("Please enter valid details");
-        return;
-    }
-
-    items.push({ name, price });
-    renderItems();
-
-    document.getElementById('itemName').value = "";
-    document.getElementById('itemPrice').value = "";
-}
 
 // Show available items
 function renderItems() {
